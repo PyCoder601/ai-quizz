@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from starlette.responses import JSONResponse
 
 from backend.auth.jwt import create_access_token, create_refresh_token, verify_token
-from backend.database.schemas import TokenUser, UserLogin, Token, UserRegister
+from backend.database.schemas import UserLogin, Token, UserRegister, UserResponse
 from backend.auth.utils import verify_password, get_password_hash
 from backend.database.db import get_async_session
 from backend.database.models import User
@@ -16,7 +17,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 
 
-@router.post("/sign-up", response_model=TokenUser)
+@router.post("/sign-up", response_model=UserResponse)
 async def sign_up(
     data: UserRegister, session: AsyncSession = Depends(get_async_session)
 ):
@@ -64,12 +65,17 @@ async def sign_up(
     return res
 
 
-@router.post("/token", response_model=TokenUser)
+@router.post("/token", response_model=UserResponse)
 async def login(
     data: UserLogin,
     session: AsyncSession = Depends(get_async_session),
 ):
-    result = await session.execute(select(User).where(User.username == data.username))
+
+    result = await session.execute(
+        select(User)
+        .options(selectinload(User.quizzes))
+        .where(User.username == data.username)
+    )
     user = result.first()[0]
     if not user or verify_password(data.password, user.hashed_password) is False:
         raise HTTPException(status_code=400, detail="Invalid credentials")
@@ -83,6 +89,7 @@ async def login(
                 "username": user.username,
                 "email": user.email,
             },
+            "quizzes": [quiz.to_dict() for quiz in user.quizzes],
             "access_token": access_token,
         }
     )

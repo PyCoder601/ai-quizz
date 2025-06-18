@@ -28,8 +28,7 @@ class QuizResponse(BaseModel):
     title: str
     result: str | None = None
     created_at: datetime | str
-    quizzes: list[QuizType] | None = None
-    user_id: int | None = None
+    elements: list[QuizType] | None = None
 
 
 class Token(BaseModel):
@@ -53,6 +52,7 @@ class UserRegister(UserLogin):
     password: str
 
 
-class TokenUser(BaseModel):
+class UserResponse(BaseModel):
     user: User
+    quizzes: list[QuizResponse] | None = None
     access_token: str

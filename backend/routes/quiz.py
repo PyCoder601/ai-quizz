@@ -25,10 +25,11 @@ async def quiz(
     session: AsyncSession = Depends(get_async_session),
 ):
     try:
+        print("token rezfgg", token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("user_id")
         if not user_id:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(status_code=400, detail="Invalid token")
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
@@ -61,7 +62,7 @@ async def quiz(
         "id": new_quizz.id,
         "title": new_quizz.title,
         "created_at": new_quizz.created_at,
-        "quizzes": quiz_elements,
+        "elements": quiz_elements,
     }
 
 

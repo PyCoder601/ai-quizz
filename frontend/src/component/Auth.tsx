@@ -2,11 +2,16 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import type { LoginType, SignupType } from '../types.ts';
 import React from 'react';
+import api from '../apis/api.ts';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../store.ts';
+import { loginUser } from '../features/userSlice.ts';
 
 function Auth() {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const dispatch: AppDispatch = useDispatch();
   const [LoginForm, setLoginForm] = useState<LoginType>({
     username: '',
     password: '',
@@ -25,20 +30,63 @@ function Auth() {
     });
   };
   const handleSignupForm = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginForm({
-      ...LoginForm,
+    setSignupForm({
+      ...SignupForm,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleLogin = async () => {
-    setIsLoading(false);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const res = await api.post('/token', LoginForm);
+      const { data } = res;
+      sessionStorage.setItem('access_token', data.access_token);
+      dispatch(
+        loginUser({
+          user: data.user,
+          quizzes: data.quizzes,
+        }),
+      );
+      window.location.href = '/espace-compte';
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      if (error.status === 401) {
+        setError("Nom d'utilisateur ou mot de passe incorrect");
+      } else setError('Erreur de connexion');
+    } finally {
+      setIsLoading(false);
+    }
   };
-  const handleSignup = async () => {
-    setIsLoading(false);
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const res = await api.post('/sign-up', SignupForm);
+      const { data } = await res;
+      sessionStorage.setItem('access_token', data.access_token);
+      dispatch(
+        loginUser({
+          user: data.user,
+          quizzes: data.quizzes,
+        }),
+      );
+      window.location.href = '/espace-compte';
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      if (error.status === 400) {
+        setError("Nom d'utilisateur existe déjà");
+      } else setError('Erreur de connexion');
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div className='mx-auto max-w-md rounded-lg bg-[#1c2e42] p-6 shadow-xl'>
+      {error && <p className={'text-center'}>{error}</p>}
       <div className='mb-6 flex justify-center'>
         <button
           className={`px-6 py-2 ${isLogin ? 'btn-grad text-white' : 'bg-transparent text-gray-300'} rounded-l-lg transition-colors`}
@@ -142,6 +190,7 @@ function Auth() {
                 'w-full rounded border border-gray-600 bg-[#2a4562] ' +
                 'p-3 focus:border-blue-400 focus:outline-none'
               }
+              name={'username'}
               placeholder='Nom_utilisateur'
               onChange={handleSignupForm}
             />
@@ -154,6 +203,7 @@ function Auth() {
                 'w-full rounded border border-gray-600 bg-[#2a4562] ' +
                 'p-3 focus:border-blue-400 focus:outline-none'
               }
+              name={'email'}
               placeholder='votre@email.com'
               onChange={handleSignupForm}
             />
@@ -169,6 +219,7 @@ function Auth() {
                 'bg-[#2a4562] p-3 focus:border-blue-400 focus:outline-none'
               }
               placeholder='••••••••'
+              name={'password'}
               onChange={handleSignupForm}
             />
           </div>

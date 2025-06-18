@@ -18,7 +18,6 @@ function Home() {
               niveau.
             </p>
           </section>
-
           {/* Formulaire de login/signup */}
           <Auth />
           {/* Pourquoi ce site */}
