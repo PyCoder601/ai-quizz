@@ -27,8 +27,8 @@ class QuizResponse(BaseModel):
     id: int | None
     title: str
     result: str | None = None
-    created_at: datetime
-    quizzes: list[QuizType]
+    created_at: datetime | str
+    quizzes: list[QuizType] | None = None
     user_id: int | None = None
 
 

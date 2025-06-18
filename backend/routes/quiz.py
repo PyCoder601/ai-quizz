@@ -5,6 +5,7 @@ from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
 
 from backend.auth.jwt import SECRET_KEY, ALGORITHM
 from backend.database.models import Quiz, QuizElement
@@ -62,3 +63,20 @@ async def quiz(
         "created_at": new_quizz.created_at,
         "quizzes": quiz_elements,
     }
+
+
+@router.get("/quizzes-history", response_model=list[QuizResponse])
+async def quizzes_history(
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_async_session),
+):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    quizzes = await session.execute(select(Quiz).where(Quiz.user_id == user_id))
+    return quizzes.scalars().all()
