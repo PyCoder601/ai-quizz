@@ -48,7 +48,7 @@ class UserLogin(BaseModel):
 
 
 class UserRegister(UserLogin):
-    email: str
+    email: str | None = None
     username: str
     password: str
 

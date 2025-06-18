@@ -20,7 +20,7 @@ from sqlalchemy import select
 async def sign_up(
     data: UserRegister, session: AsyncSession = Depends(get_async_session)
 ):
-    result = await session.execute(select(User).where(User.username == data.email))
+    result = await session.execute(select(User).where(User.username == data.username))
     existing_user = result.scalar_one_or_none()
     if existing_user:
         raise HTTPException(
