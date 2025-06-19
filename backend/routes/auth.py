@@ -8,7 +8,7 @@ from backend.auth.jwt import create_access_token, create_refresh_token, verify_t
 from backend.database.schemas import UserLogin, Token, UserRegister, UserResponse
 from backend.auth.utils import verify_password, get_password_hash
 from backend.database.db import get_async_session
-from backend.database.models import User
+from backend.database.models import User, Quota
 
 router = APIRouter()
 
@@ -35,9 +35,15 @@ async def sign_up(
         email=data.email,
         hashed_password=hashed_password,
     )
+
     session.add(user)
     await session.commit()
     await session.refresh(user)
+
+    quota = Quota(user_id=user.id)
+    session.add(quota)
+    await session.commit()
+    await session.refresh(quota)
 
     user_data = {"sub": user.username, "user_id": user.id}
     access_token = create_access_token(user_data)
@@ -46,10 +52,10 @@ async def sign_up(
     res = JSONResponse(
         {
             "user": {
-                "id": user.id,
                 "username": user.username,
                 "email": user.email,
             },
+            "quota": quota.quota_remaining,
             "quizzes": [],
             "access_token": access_token,
         }
@@ -83,6 +89,11 @@ async def login(
     user_data = {"sub": user.username, "user_id": user.id}
     access_token = create_access_token(user_data)
     refresh_token = create_refresh_token(user_data)
+
+    user_quota = await session.execute(select(Quota).where(Quota.user_id == user.id))
+
+    user_quota = user_quota.scalar_one_or_none()
+
     res = JSONResponse(
         {
             "user": {
@@ -90,6 +101,7 @@ async def login(
                 "username": user.username,
                 "email": user.email,
             },
+            "quota": user_quota.quota_remaining,
             "quizzes": [quiz.to_dict() for quiz in user.quizzes],
             "access_token": access_token,
         }

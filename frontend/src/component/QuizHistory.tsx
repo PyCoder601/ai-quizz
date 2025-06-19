@@ -24,22 +24,22 @@ function QuizHistory() {
   };
 
   return (
-    <div className='mt-8 rounded-lg bg-[#1c2e42] p-6 shadow-xl'>
+    <div className='mt-8 rounded-lg bg-[#1c2e42] p-2 shadow-xl sm:p-6'>
       <h2 className='mb-4 text-xl font-semibold'>
         Historique de vos 10 derniers quiz
       </h2>
 
-      <div className='overflow-x-auto'>
+      <div>
         <table className='w-full min-w-full divide-y divide-gray-700'>
           <thead>
             <tr>
-              <th className='px-4 py-3 text-left text-sm font-medium text-gray-300'>
+              <th className='px-2 py-3 text-left text-sm font-medium text-gray-300'>
                 Sujet
               </th>
-              <th className='px-4 py-3 text-left text-sm font-medium text-gray-300'>
+              <th className='px-2 py-3 text-left text-sm font-medium text-gray-300'>
                 Date
               </th>
-              <th className='px-4 py-3 text-left text-sm font-medium text-gray-300'>
+              <th className='px-2 py-3 text-left text-sm font-medium text-gray-300'>
                 Résultat
               </th>
             </tr>
@@ -50,13 +50,13 @@ function QuizHistory() {
                 key={quiz.id}
                 className='transition-colors hover:bg-[#243B55]'
               >
-                <td className='px-4 py-3 text-sm whitespace-nowrap'>
+                <td className='px-2 py-3 text-sm whitespace-nowrap'>
                   {quiz.title}
                 </td>
-                <td className='px-4 py-3 text-sm whitespace-nowrap'>
+                <td className='px-2 py-3 text-sm whitespace-nowrap'>
                   {formatDate(quiz.created_at)}
                 </td>
-                <td className='px-4 py-3 text-sm whitespace-nowrap'>
+                <td className='px-2 py-3 text-sm whitespace-nowrap'>
                   <span className='rounded-full bg-green-500/20 px-2 py-1 text-green-300'>
                     {quiz.result || 'Non disponible'}
                   </span>

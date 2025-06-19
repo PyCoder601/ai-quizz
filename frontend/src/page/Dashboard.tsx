@@ -6,13 +6,16 @@ import api, { logout } from '../apis/api.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addQuiz,
+  decrementQuota,
   selectCurrQuiz,
+  selectQuota,
   setCurrentQuiz,
 } from '../features/userSlice.ts';
 import type { AppDispatch } from '../store.ts';
 
 function Dashboard() {
   const quiz: QuizType | null = useSelector(selectCurrQuiz);
+  const quotaRemaining: number = useSelector(selectQuota);
 
   const [topic, setTopic] = useState('');
   const [difficulty, setDifficulty] = useState('easy');
@@ -27,7 +30,6 @@ function Dashboard() {
   const [earnedPoints, setEarnedPoints] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
-  const quotaRemaining: number = 5;
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -68,8 +70,8 @@ function Dashboard() {
         0,
       );
       setTotalPoints(totalPossiblePoints);
-
       dispatch(setCurrentQuiz(processedQuiz));
+      dispatch(decrementQuota());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
     } finally {
@@ -138,7 +140,6 @@ function Dashboard() {
   };
 
   const createNewQuiz = async () => {
-    // Sauvegarder le résultat avant de créer un nouveau quiz
     if (quiz && quiz.id && !quiz.result) {
       await saveQuizResult();
     }
@@ -154,23 +155,20 @@ function Dashboard() {
       }
     >
       <div>
-        {/* Bandeau d'information sur le quota */}
         <div className='mb-6 rounded-lg bg-[#1c2e42] p-4 shadow-lg'>
           <div className='flex flex-col items-center justify-between space-y-2 sm:flex-row sm:space-y-0'>
+            <h1 className='text-xl font-bold sm:text-2xl'>QUIZ AI APP</h1>
             <h1
               className='cursor-pointer rounded-2xl bg-red-400 px-2 py-1 text-xl font-bold text-[#1c2e42] sm:text-2xl'
               onClick={logout}
             >
               se deconnécter
             </h1>
-            <h1 className='text-xl font-bold sm:text-2xl'>QUIZ AI APP</h1>
             <div className='flex items-center space-x-2'>
-              <span className='text-sm text-gray-300'>
-                Quiz restants aujourd'hui:
-              </span>
+              <span className='text-sm text-gray-300'>Quiz restants :</span>
               <span
                 className={`rounded-full px-3 py-1 text-sm font-medium ${
-                  quotaRemaining > 5
+                  quotaRemaining > 3
                     ? 'bg-green-500/20 text-green-300'
                     : quotaRemaining > 0
                       ? 'bg-yellow-500/20 text-yellow-300'
@@ -213,7 +211,10 @@ function Dashboard() {
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder='Ex: Python, Histoire de France, Mathématiques...'
-                    className='w-full rounded-lg border border-gray-600 bg-[#2a4562] p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none'
+                    className={
+                      'w-full rounded-lg border border-gray-600 ' +
+                      'bg-[#2a4562] p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none'
+                    }
                     required
                   />
                 </div>
@@ -232,9 +233,11 @@ function Dashboard() {
                       min='1'
                       max='20'
                       value={numberOfQuestions}
-                      onChange={(e) =>
-                        setNumberOfQuestions(parseInt(e.target.value))
-                      }
+                      onChange={(e) => {
+                        let n: number = parseInt(e.target.value);
+                        if (n > 10) n = 10;
+                        setNumberOfQuestions(n);
+                      }}
                       className='w-full rounded-lg border border-gray-600 bg-[#2a4562] p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none'
                       required
                     />
@@ -290,7 +293,7 @@ function Dashboard() {
                       Génération en cours...
                     </>
                   ) : quotaRemaining <= 0 ? (
-                    "Quota épuisé pour aujourd'hui"
+                    'Quota épuisé, revient dans 5 heures'
                   ) : (
                     'Générer mon Quiz'
                   )}

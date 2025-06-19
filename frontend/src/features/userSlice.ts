@@ -5,12 +5,14 @@ interface UserState {
   user: UserType | null;
   quizzes: QuizType[] | null;
   curr_quiz: QuizType | null;
+  quota: number;
 }
 
 const initialState: UserState = {
   user: null,
   quizzes: [],
   curr_quiz: null,
+  quota: 0,
 };
 
 const userSlice = createSlice({
@@ -20,6 +22,7 @@ const userSlice = createSlice({
     loginUser: (state, action: PayloadAction<UserState>) => {
       state.user = action.payload.user;
       state.quizzes = action.payload.quizzes;
+      state.quota = action.payload.quota;
     },
     setCurrentQuiz: (state, action: PayloadAction<QuizType | null>) => {
       state.curr_quiz = action.payload;
@@ -27,10 +30,14 @@ const userSlice = createSlice({
     addQuiz: (state, action: PayloadAction<QuizType>) => {
       state.quizzes?.push(action.payload);
     },
+    decrementQuota: (state) => {
+      state.quota = state.quota > 0 ? state.quota - 1 : 0;
+    },
   },
 });
 
-export const { loginUser, setCurrentQuiz, addQuiz } = userSlice.actions;
+export const { loginUser, setCurrentQuiz, addQuiz, decrementQuota } =
+  userSlice.actions;
 
 export const selectQuizzes = (state: { user: UserState }) => {
   return state.user.quizzes;
@@ -42,6 +49,10 @@ export const selectUser = (state: { user: UserState }) => {
 
 export const selectCurrQuiz = (state: { user: UserState }) => {
   return state.user.curr_quiz;
+};
+
+export const selectQuota = (state: { user: UserState }) => {
+  return state.user.quota;
 };
 
 export default userSlice.reducer;

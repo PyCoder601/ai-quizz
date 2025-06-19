@@ -45,4 +45,5 @@ Le format de chaque question doit être le suivant (en JSON) :
         except json.JSONDecodeError as e:
             return {"error": f"Erreur JSON: {str(e)}", "raw_text": cleaned_text}
     except Exception as e:
+        print(e)
         return {"error": str(e)}

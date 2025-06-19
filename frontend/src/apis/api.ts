@@ -56,7 +56,9 @@ api.interceptors.response.use(
 export const logout = async () => {
   await api.post('/logout/', {}, { withCredentials: true });
   sessionStorage.removeItem(ACCESS_TOKEN);
-  store.dispatch(loginUser({ user: null, quizzes: [], curr_quiz: null }));
+  store.dispatch(
+    loginUser({ user: null, quizzes: [], curr_quiz: null, quota: null }),
+  );
   window.location.href = '/';
 };
 

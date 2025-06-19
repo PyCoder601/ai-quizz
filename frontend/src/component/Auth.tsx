@@ -48,6 +48,7 @@ function Auth() {
           user: data.user,
           quizzes: data.quizzes,
           curr_quiz: null,
+          quota: data.quota,
         }),
       );
       window.location.href = '/espace-compte';
@@ -77,6 +78,7 @@ function Auth() {
           user: data.user,
           quizzes: data.quizzes,
           curr_quiz: null,
+          quota: data.quota,
         }),
       );
       window.location.href = '/espace-compte';

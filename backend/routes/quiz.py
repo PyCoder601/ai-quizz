@@ -1,5 +1,3 @@
-import json
-
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -8,10 +6,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 from backend.auth.jwt import SECRET_KEY, ALGORITHM
-from backend.database.models import Quiz
+from backend.database.models import Quiz, Quota
 from backend.database.schemas import QuizRequest, QuizResponse, QuizUpdate
 from backend.database.db import get_async_session
 from backend.routes.generate_quizzes import generate_challenge_with_ai
+from backend.routes.helper import reset_quota_if_needed
 
 router = APIRouter()
 
@@ -32,6 +31,12 @@ async def quiz(
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+    user_quota = await session.execute(select(Quota).where(Quota.user_id == user_id))
+    user_quota = user_quota.scalar_one_or_none()
+    user_quota = reset_quota_if_needed(session, user_quota)
+    if user_quota.quota_remaining <= 0:
+        raise HTTPException(status_code=401, detail="No quota remaining")
+
     new_quizzes = generate_challenge_with_ai(
         data.topic, data.difficulty, data.number_of_questions
     )
@@ -45,6 +50,9 @@ async def quiz(
     await session.refresh(new_quizz)
 
     new_quizzes = new_quizzes.get("quizzes", [])
+    user_quota.quota_remaining -= 1
+    await session.commit()
+    await session.refresh(user_quota)
 
     return {
         "id": new_quizz.id,

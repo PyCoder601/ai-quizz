@@ -56,6 +56,7 @@ class UserResponse(BaseModel):
     user: User
     quizzes: list[QuizResponse] | None = None
     access_token: str
+    quota: int | None = None
 
 
 class QuizUpdate(BaseModel):

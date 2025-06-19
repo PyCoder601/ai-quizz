@@ -29,3 +29,7 @@ export interface QuizElements {
   explanation: string;
   point: number;
 }
+
+export interface QuotaType {
+  quota_remaining: number;
+}

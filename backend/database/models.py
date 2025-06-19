@@ -10,6 +10,21 @@ class User(SQLModel, table=True):
     hashed_password: str
 
     quizzes: list["Quiz"] = Relationship(back_populates="user")
+    quota: Optional["Quota"] = Relationship(back_populates="user")
+
+
+class Quota(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int | None = Field(default=None, foreign_key="user.id")
+    user: Optional[User] = Relationship(back_populates="quota")
+    quota_remaining: int = Field(default=2)
+    last_reset: datetime = Field(default_factory=datetime.now)
+
+    def to_dict(self) -> dict:
+        return {
+            "quota_remaining": self.quota_remaining,
+            "last_reset": self.last_reset.isoformat(),
+        }
 
 
 class Quiz(SQLModel, table=True):
@@ -20,7 +35,7 @@ class Quiz(SQLModel, table=True):
     user_id: int | None = Field(default=None, foreign_key="user.id")
     user: Optional[User] = Relationship(back_populates="quizzes")
 
-    def to_dict(self, include_elements: bool = False) -> dict:
+    def to_dict(self) -> dict:
         return {
             "id": self.id,
             "title": self.title,
