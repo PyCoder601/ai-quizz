@@ -11,7 +11,6 @@ export interface UserType {
   id?: string;
   username: string;
   email: string;
-  quizzes: string[];
 }
 
 export interface QuizType {
@@ -28,4 +27,5 @@ export interface QuizElements {
   options: string | string[];
   correct_option: number;
   explanation: string;
+  point: number;
 }

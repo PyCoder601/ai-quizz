@@ -19,15 +19,16 @@ Le format de chaque question doit être le suivant (en JSON) :
   "question": "Titre de la question",
   "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
   "correct_option": 0,
+  "point": 2,
   "explanation": "Explication détaillée de la bonne réponse"
 }}
 
 - Assure-toi que chaque question a exactement 4 options.
 - La bonne réponse doit correspondre à l’index correct_answer_id.
+- Le point est un nombre entier positif.
 - L’explication doit être claire et pédagogique.
 - La sortie doit être un tableau JSON uniquement contenant tous les objets question.
 """.strip()
-    print(system_prompt)
     try:
         response = client.generate_content(system_prompt)
         raw_text = response.text.strip()

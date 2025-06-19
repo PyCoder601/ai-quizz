@@ -9,7 +9,7 @@ from sqlmodel import select
 
 from backend.auth.jwt import SECRET_KEY, ALGORITHM
 from backend.database.models import Quiz, QuizElement
-from backend.database.schemas import QuizRequest, QuizType, QuizResponse
+from backend.database.schemas import QuizRequest, QuizType, QuizResponse, QuizUpdate
 from backend.database.db import get_async_session
 from backend.routes.generate_quizzes import generate_challenge_with_ai
 
@@ -52,6 +52,7 @@ async def quiz(
             question=q["question"],
             options=json.dumps(q["options"]),
             correct_option=q["correct_option"],
+            point=q["point"],
             explanation=q["explanation"],
             quiz_id=new_quizz.id,
         )
@@ -81,3 +82,22 @@ async def quizzes_history(
 
     quizzes = await session.execute(select(Quiz).where(Quiz.user_id == user_id))
     return quizzes.scalars().all()
+
+
+@router.patch("/quizzes-resul/{quiz_id}")
+async def update_quiz_result(
+    quiz_id: int, data: QuizUpdate, session: AsyncSession = Depends(get_async_session)
+):
+    result = await session.execute(select(Quiz).where(Quiz.id == quiz_id))
+    cur_quiz = result.scalar_one_or_none()
+
+    if not cur_quiz:
+        raise HTTPException(status_code=404, detail="Quiz not found")
+
+    cur_quiz.result = data.result
+
+    session.add(cur_quiz)
+    await session.commit()
+    await session.refresh(cur_quiz)
+
+    return {"message": "Quiz updated", "quiz": cur_quiz}

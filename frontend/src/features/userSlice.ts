@@ -4,11 +4,13 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 interface UserState {
   user: UserType | null;
   quizzes: QuizType[] | null;
+  curr_quiz: QuizType | null;
 }
 
 const initialState: UserState = {
   user: null,
   quizzes: [],
+  curr_quiz: null,
 };
 
 const userSlice = createSlice({
@@ -19,17 +21,27 @@ const userSlice = createSlice({
       state.user = action.payload.user;
       state.quizzes = action.payload.quizzes;
     },
+    setCurrentQuiz: (state, action: PayloadAction<QuizType | null>) => {
+      state.curr_quiz = action.payload;
+    },
+    addQuiz: (state, action: PayloadAction<QuizType>) => {
+      state.quizzes?.push(action.payload);
+    },
   },
 });
 
-export const { loginUser } = userSlice.actions;
+export const { loginUser, setCurrentQuiz, addQuiz } = userSlice.actions;
 
-export const selectQuizzes = (state: UserState) => {
-  return state.quizzes;
+export const selectQuizzes = (state: { user: UserState }) => {
+  return state.user.quizzes;
 };
 
-export const selectUser = (state: UserState) => {
-  return state.user;
+export const selectUser = (state: { user: UserState }) => {
+  return state.user.quizzes;
+};
+
+export const selectCurrQuiz = (state: { user: UserState }) => {
+  return state.user.curr_quiz;
 };
 
 export default userSlice.reducer;

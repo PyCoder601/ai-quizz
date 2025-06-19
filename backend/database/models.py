@@ -40,6 +40,7 @@ class QuizElement(SQLModel, table=True):
     options: str
     correct_option: int
     explanation: str
+    point: int
 
     quiz_id: int | None = Field(default=None, foreign_key="quiz.id")
     quiz: Optional["Quiz"] = Relationship(back_populates="elements")
@@ -51,5 +52,6 @@ class QuizElement(SQLModel, table=True):
             "options": self.options,
             "correct_option": self.correct_option,
             "explanation": self.explanation,
+            "point": self.point,
             "quiz_id": self.quiz_id,
         }

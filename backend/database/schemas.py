@@ -14,6 +14,7 @@ class QuizType(BaseModel):
     question: str
     options: str
     correct_option: int
+    point: int | None = None
     explanation: str
 
 
@@ -56,3 +57,7 @@ class UserResponse(BaseModel):
     user: User
     quizzes: list[QuizResponse] | None = None
     access_token: str
+
+
+class QuizUpdate(BaseModel):
+    result: str
