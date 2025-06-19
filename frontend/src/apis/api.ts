@@ -6,7 +6,7 @@ import { loginUser } from '../features/userSlice.ts';
 const ACCESS_TOKEN = 'access_token';
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:8002/api',
+  baseURL: 'https://fastapi-backend-qbzg.onrender.com',
   withCredentials: true,
 });
 
@@ -31,7 +31,7 @@ api.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          `http://localhost:8002/api/refresh/`,
+          `https://fastapi-backend-qbzg.onrender.com/refresh/`,
           {},
           { withCredentials: true },
         );
