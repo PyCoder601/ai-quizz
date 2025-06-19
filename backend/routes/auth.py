@@ -26,7 +26,7 @@ async def sign_up(
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Email already registered",
+            detail="Username already registered",
         )
 
     hashed_password = get_password_hash(data.password)
@@ -50,6 +50,7 @@ async def sign_up(
                 "username": user.username,
                 "email": user.email,
             },
+            "quizzes": [],
             "access_token": access_token,
         }
     )
@@ -134,3 +135,13 @@ async def resfresh_token(request: Request):
         samesite=None,
     )
     return res
+
+
+@router.post("/logout")
+async def logout(request: Request):
+    res = JSONResponse(
+        {
+            "message": "Logged out",
+        }
+    )
+    res.delete_cookie(key="refresh_token")

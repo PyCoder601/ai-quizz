@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
 
 from backend.routes import auth, quiz
-from backend.database.models import User, Quiz, QuizElement
+from backend.database.models import User, Quiz
 
 
 from backend.database.db import engine

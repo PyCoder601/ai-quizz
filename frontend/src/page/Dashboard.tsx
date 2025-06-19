@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { QuizType, QuizElements } from '../types';
 import Quiz from '../component/Quiz';
 import QuizHistory from '../component/QuizHistory';
-import api from '../apis/api.ts';
+import api, { logout } from '../apis/api.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addQuiz,
@@ -108,16 +108,14 @@ function Dashboard() {
     setSaveError('');
 
     try {
-      await api.patch(`/quizzes/${quiz.id}`, {
+      await api.patch(`/quizzes-resul/${quiz.id}`, {
         result: `${earnedPoints}/${totalPoints}`,
       });
-      dispatch(
-        setCurrentQuiz({
-          ...quiz,
-          result: `${earnedPoints}/${totalPoints}`,
-        }),
-      );
-      dispatch(addQuiz(quiz));
+      const updatedQuiz: QuizType = {
+        ...quiz,
+        result: `${earnedPoints}/${totalPoints}`,
+      };
+      dispatch(addQuiz(updatedQuiz));
     } catch (err) {
       setSaveError(
         err instanceof Error ? err.message : 'Erreur lors de la sauvegarde',
@@ -151,15 +149,21 @@ function Dashboard() {
   return (
     <div
       className={
-        'm-w-[90%] mx-auto min-h-screen sm:max-w-4/6' +
-        ' to-[#141E30] p-4 text-white md:p-6'
+        'mx-auto min-h-screen max-w-[95%] sm:max-w-4/6' +
+        ' p-4 text-white md:p-6'
       }
     >
-      <div className='mx-auto max-w-6xl'>
+      <div>
         {/* Bandeau d'information sur le quota */}
         <div className='mb-6 rounded-lg bg-[#1c2e42] p-4 shadow-lg'>
           <div className='flex flex-col items-center justify-between space-y-2 sm:flex-row sm:space-y-0'>
-            <h1 className='text-xl font-bold sm:text-2xl'>Tableau de bord</h1>
+            <h1
+              className='cursor-pointer rounded-2xl bg-red-400 px-2 py-1 text-xl font-bold text-[#1c2e42] sm:text-2xl'
+              onClick={logout}
+            >
+              se deconnécter
+            </h1>
+            <h1 className='text-xl font-bold sm:text-2xl'>QUIZ AI APP</h1>
             <div className='flex items-center space-x-2'>
               <span className='text-sm text-gray-300'>
                 Quiz restants aujourd'hui:

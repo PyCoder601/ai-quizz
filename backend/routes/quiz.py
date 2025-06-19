@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 from backend.auth.jwt import SECRET_KEY, ALGORITHM
-from backend.database.models import Quiz, QuizElement
-from backend.database.schemas import QuizRequest, QuizType, QuizResponse, QuizUpdate
+from backend.database.models import Quiz
+from backend.database.schemas import QuizRequest, QuizResponse, QuizUpdate
 from backend.database.db import get_async_session
 from backend.routes.generate_quizzes import generate_challenge_with_ai
 
@@ -25,7 +25,6 @@ async def quiz(
     session: AsyncSession = Depends(get_async_session),
 ):
     try:
-        print("token rezfgg", token)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("user_id")
         if not user_id:
@@ -46,24 +45,12 @@ async def quiz(
     await session.refresh(new_quizz)
 
     new_quizzes = new_quizzes.get("quizzes", [])
-    quiz_elements = []
-    for q in new_quizzes:
-        element = QuizElement(
-            question=q["question"],
-            options=json.dumps(q["options"]),
-            correct_option=q["correct_option"],
-            point=q["point"],
-            explanation=q["explanation"],
-            quiz_id=new_quizz.id,
-        )
-        quiz_elements.append(element)
-    session.add_all(quiz_elements)
-    await session.commit()
+
     return {
         "id": new_quizz.id,
         "title": new_quizz.title,
         "created_at": new_quizz.created_at,
-        "elements": quiz_elements,
+        "elements": new_quizzes,
     }
 
 

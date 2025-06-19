@@ -5,10 +5,12 @@ import { selectQuizzes } from '../features/userSlice.ts';
 function QuizHistory() {
   const quizzes: QuizType[] | null = useSelector(selectQuizzes);
   if (!quizzes) return null;
-  const sortedQuizzes = [...quizzes].sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-  );
+  const sortedQuizzes = [...quizzes]
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    )
+    .slice(0, 10);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -23,7 +25,9 @@ function QuizHistory() {
 
   return (
     <div className='mt-8 rounded-lg bg-[#1c2e42] p-6 shadow-xl'>
-      <h2 className='mb-4 text-xl font-semibold'>Historique de vos quiz</h2>
+      <h2 className='mb-4 text-xl font-semibold'>
+        Historique de vos 10 derniers quiz
+      </h2>
 
       <div className='overflow-x-auto'>
         <table className='w-full min-w-full divide-y divide-gray-700'>

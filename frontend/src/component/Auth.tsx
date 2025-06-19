@@ -47,6 +47,7 @@ function Auth() {
         loginUser({
           user: data.user,
           quizzes: data.quizzes,
+          curr_quiz: null,
         }),
       );
       window.location.href = '/espace-compte';
@@ -57,6 +58,10 @@ function Auth() {
         setError("Nom d'utilisateur ou mot de passe incorrect");
       } else setError('Erreur de connexion');
     } finally {
+      setLoginForm({
+        username: '',
+        password: '',
+      });
       setIsLoading(false);
     }
   };
@@ -65,12 +70,13 @@ function Auth() {
     setIsLoading(true);
     try {
       const res = await api.post('/sign-up', SignupForm);
-      const { data } = await res;
+      const { data } = res;
       sessionStorage.setItem('access_token', data.access_token);
       dispatch(
         loginUser({
           user: data.user,
           quizzes: data.quizzes,
+          curr_quiz: null,
         }),
       );
       window.location.href = '/espace-compte';
@@ -81,6 +87,11 @@ function Auth() {
         setError("Nom d'utilisateur existe déjà");
       } else setError('Erreur de connexion');
     } finally {
+      setSignupForm({
+        username: '',
+        password: '',
+        email: '',
+      });
       setIsLoading(false);
     }
   };
@@ -115,6 +126,7 @@ function Auth() {
                 ' bg-[#2a4562] p-3 focus:border-blue-400 focus:outline-none'
               }
               onChange={handleLoginForm}
+              value={LoginForm.username}
               placeholder='nom_utilisateur'
               name={'username'}
             />
@@ -131,6 +143,7 @@ function Auth() {
               }
               name={'password'}
               onChange={handleLoginForm}
+              value={LoginForm.password}
               placeholder='••••••••'
             />
           </div>
@@ -193,6 +206,7 @@ function Auth() {
               name={'username'}
               placeholder='Nom_utilisateur'
               onChange={handleSignupForm}
+              value={SignupForm.username}
             />
           </div>
           <div>
@@ -206,6 +220,7 @@ function Auth() {
               name={'email'}
               placeholder='votre@email.com'
               onChange={handleSignupForm}
+              value={SignupForm.email}
             />
           </div>
           <div>
@@ -220,6 +235,7 @@ function Auth() {
               }
               placeholder='••••••••'
               name={'password'}
+              value={SignupForm.password}
               onChange={handleSignupForm}
             />
           </div>

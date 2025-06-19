@@ -12,19 +12,18 @@ interface QuizProps {
 function Quiz({
   question,
   onAnswer,
-  userAnswer,
   questionNumber,
   totalQuestions,
 }: QuizProps) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(45);
+  const [timeLeft, setTimeLeft] = useState(30);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     setSelectedOption(null);
     setShowFeedback(false);
-    setTimeLeft(45);
+    setTimeLeft(30);
     setIsTransitioning(false);
   }, [question]);
 
@@ -106,14 +105,14 @@ function Quiz({
         {question.question}
       </h2>
 
-      <div className='mb-6 space-y-3'>
+      <div className='mb-2 space-y-2'>
         {Array.isArray(question.options) &&
           question.options.map((option, index) => (
             <button
               key={index}
               onClick={() => handleSelectOption(index)}
               disabled={showFeedback}
-              className={`w-full rounded-lg border p-4 text-left transition-colors ${getOptionClass(index)}`}
+              className={`w-full rounded-lg border p-2 text-left transition-colors ${getOptionClass(index)}`}
             >
               <div className='flex items-start'>
                 <span className='mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#243B55]'>
@@ -127,7 +126,7 @@ function Quiz({
 
       {showFeedback && (
         <div
-          className={`mt-4 rounded-lg p-4 ${
+          className={`mt-2 rounded-lg p-4 ${
             selectedOption === question.correct_option
               ? 'border border-green-500 bg-green-500/20'
               : 'border border-red-500 bg-red-500/20'

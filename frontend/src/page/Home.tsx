@@ -2,7 +2,7 @@ import Auth from '../component/Auth.tsx';
 
 function Home() {
   return (
-    <div className='min-h-screen bg-[#141E30] text-white'>
+    <div className='mx-auto min-h-screen max-w-[95%] text-white sm:max-w-4/6'>
       <div className='container mx-auto px-2 py-12 sm:px-4'>
         <div className='mx-auto mb-16 max-w-4xl space-y-12'>
           <section className='space-y-4 text-center'>

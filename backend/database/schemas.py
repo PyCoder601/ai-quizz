@@ -10,9 +10,8 @@ class User(BaseModel):
 
 
 class QuizType(BaseModel):
-    id: int
     question: str
-    options: str
+    options: list[str]
     correct_option: int
     point: int | None = None
     explanation: str
