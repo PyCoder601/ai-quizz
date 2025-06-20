@@ -40,7 +40,9 @@ function Auth() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await api.post('/token', LoginForm);
+      const res = await api.post('/token', LoginForm, {
+        withCredentials: true,
+      });
       const { data } = res;
       sessionStorage.setItem('access_token', data.access_token);
       dispatch(
@@ -70,7 +72,9 @@ function Auth() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await api.post('/sign-up', SignupForm);
+      const res = await api.post('/sign-up', SignupForm, {
+        withCredentials: true,
+      });
       const { data } = res;
       sessionStorage.setItem('access_token', data.access_token);
       dispatch(
