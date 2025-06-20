@@ -30,10 +30,12 @@ async def keep_alive():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+
     print("Starting database...")
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
     print("Database started.")
+
     asyncio.create_task(keep_alive())
     yield
     print("Closing app...")
