@@ -8,7 +8,7 @@ interface UserState {
   quota: QuotaType;
 }
 
-const initialState: UserState = {
+export const initialState: UserState = {
   user: null,
   quizzes: [],
   curr_quiz: null,

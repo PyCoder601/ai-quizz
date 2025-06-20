@@ -1,7 +1,7 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 import { store } from '../store.ts';
-import { loginUser } from '../features/userSlice.ts';
+import { initialState, loginUser } from '../features/userSlice.ts';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -59,9 +59,7 @@ export const logout = async () => {
   await api.post('/logout/', {}, { withCredentials: true });
   sessionStorage.removeItem(ACCESS_TOKEN);
   window.location.href = '/';
-  store.dispatch(
-    loginUser({ user: null, quizzes: [], curr_quiz: null, quota: 0 }),
-  );
+  store.dispatch(loginUser(initialState));
 };
 
 export default api;
