@@ -6,7 +6,7 @@ import { loginUser } from '../features/userSlice.ts';
 const ACCESS_TOKEN = 'access_token';
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'https://fastapi-backend-qbzg.onrender.com/api',
+  baseURL: 'https://fastapi-backend-nr60.onrender.com/api',
   withCredentials: true,
 });
 
