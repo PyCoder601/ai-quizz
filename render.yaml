@@ -14,7 +14,7 @@ services:
         value: 8000
 
   - type: web
-    name: react-frontend
+    name: ai-quiz
     env: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
