@@ -9,6 +9,7 @@ from backend.database.schemas import UserLogin, Token, UserRegister, UserRespons
 from backend.auth.utils import verify_password, get_password_hash
 from backend.database.db import get_async_session
 from backend.database.models import User, Quota
+from backend.routes.helper import reset_quota_if_needed
 
 router = APIRouter()
 
@@ -55,7 +56,7 @@ async def sign_up(
                 "username": user.username,
                 "email": user.email,
             },
-            "quota": quota.quota_remaining,
+            "quota": quota.to_dict(),
             "quizzes": [],
             "access_token": access_token,
         }
@@ -94,6 +95,8 @@ async def login(
 
     user_quota = user_quota.scalar_one_or_none()
 
+    user_quota = reset_quota_if_needed(session, user_quota)
+
     res = JSONResponse(
         {
             "user": {
@@ -101,7 +104,7 @@ async def login(
                 "username": user.username,
                 "email": user.email,
             },
-            "quota": user_quota.quota_remaining,
+            "quota": user_quota.to_dict(),
             "quizzes": [quiz.to_dict() for quiz in user.quizzes],
             "access_token": access_token,
         }
@@ -120,10 +123,10 @@ async def login(
 
 
 @router.post("/refresh", response_model=Token)
-async def resfresh_token(request: Request):
+async def refresh_token_func(request: Request):
     refresh_token = request.cookies.get("refresh_token")
 
-    if not resfresh_token:
+    if not refresh_token:
         raise HTTPException(status_code=400, detail="No refresh token")
 
     payload = verify_token(refresh_token, token_type="refresh")
@@ -157,3 +160,8 @@ async def logout(request: Request):
         }
     )
     res.delete_cookie(key="refresh_token")
+
+
+@router.get("/stay-online")
+async def stay_online(request: Request):
+    return {"message": "Stay online"}

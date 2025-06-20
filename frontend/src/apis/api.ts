@@ -3,10 +3,12 @@ import axios from 'axios';
 import { store } from '../store.ts';
 import { loginUser } from '../features/userSlice.ts';
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const ACCESS_TOKEN = 'access_token';
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'https://fastapi-backend-unzj.onrender.com/api',
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
@@ -56,10 +58,10 @@ api.interceptors.response.use(
 export const logout = async () => {
   await api.post('/logout/', {}, { withCredentials: true });
   sessionStorage.removeItem(ACCESS_TOKEN);
+  window.location.href = '/';
   store.dispatch(
     loginUser({ user: null, quizzes: [], curr_quiz: null, quota: 0 }),
   );
-  window.location.href = '/';
 };
 
 export default api;

@@ -2,3 +2,4 @@ backend/.venv
 backend/.env
 backend/.python-version
 .idea
+frontend/.env

@@ -1,6 +1,22 @@
 import Auth from '../component/Auth.tsx';
+import { useEffect } from 'react';
+import axios from 'axios';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 function Home() {
+  useEffect(() => {
+    const fetchData = async () => {
+      await axios.get(`${BASE_URL}/stay-online`, {
+        withCredentials: true,
+      });
+    };
+
+    fetchData().catch();
+
+    const interval = setInterval(fetchData, 15 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <div className='mx-auto min-h-screen max-w-[95%] text-white sm:max-w-4/6'>
       <div className='container mx-auto px-2 py-12 sm:px-4'>

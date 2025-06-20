@@ -5,12 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "alembic>=1.16.2",
     "asyncpg>=0.30.0",
     "bcrypt<4.1.0",
     "black>=25.1.0",
     "fastapi[standard]>=0.115.12",
     "google-generativeai>=0.8.5",
     "passlib>=1.7.4",
+    "psycopg2-binary>=2.9.10",
     "python-jose>=3.5.0",
     "sqlmodel>=0.0.24",
 ]

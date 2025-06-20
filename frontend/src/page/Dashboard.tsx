@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { QuizType, QuizElements } from '../types';
+import type { QuizType, QuizElements, QuotaType } from '../types';
 import Quiz from '../component/Quiz';
 import QuizHistory from '../component/QuizHistory';
 import api, { logout } from '../apis/api.ts';
@@ -12,10 +12,11 @@ import {
   setCurrentQuiz,
 } from '../features/userSlice.ts';
 import type { AppDispatch } from '../store.ts';
+import { getRemainingTime } from '../helpers.ts';
 
 function Dashboard() {
   const quiz: QuizType | null = useSelector(selectCurrQuiz);
-  const quotaRemaining: number = useSelector(selectQuota);
+  const quota: QuotaType = useSelector(selectQuota);
 
   const [topic, setTopic] = useState('');
   const [difficulty, setDifficulty] = useState('easy');
@@ -168,14 +169,14 @@ function Dashboard() {
               <span className='text-sm text-gray-300'>Quiz restants :</span>
               <span
                 className={`rounded-full px-3 py-1 text-sm font-medium ${
-                  quotaRemaining > 3
+                  quota.quota_remaining > 1
                     ? 'bg-green-500/20 text-green-300'
-                    : quotaRemaining > 0
+                    : quota.quota_remaining > 0
                       ? 'bg-yellow-500/20 text-yellow-300'
                       : 'bg-red-500/20 text-red-300'
                 }`}
               >
-                {quotaRemaining}
+                {quota.quota_remaining}
               </span>
             </div>
           </div>
@@ -266,7 +267,7 @@ function Dashboard() {
                 <button
                   type='submit'
                   className='mt-4 flex w-full items-center justify-center rounded-lg bg-blue-500 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-600 disabled:bg-gray-500'
-                  disabled={isLoading || quotaRemaining <= 0}
+                  disabled={isLoading || quota.quota_remaining <= 0}
                 >
                   {isLoading ? (
                     <>
@@ -292,8 +293,8 @@ function Dashboard() {
                       </svg>
                       Génération en cours...
                     </>
-                  ) : quotaRemaining <= 0 ? (
-                    'Quota épuisé, revient dans 5 heures'
+                  ) : quota.quota_remaining <= 0 ? (
+                    getRemainingTime(quota.last_reset)
                   ) : (
                     'Générer mon Quiz'
                   )}

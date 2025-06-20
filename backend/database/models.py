@@ -17,7 +17,7 @@ class Quota(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int | None = Field(default=None, foreign_key="user.id")
     user: Optional[User] = Relationship(back_populates="quota")
-    quota_remaining: int = Field(default=2)
+    quota_remaining: int = Field(default=5)
     last_reset: datetime = Field(default_factory=datetime.now)
 
     def to_dict(self) -> dict:

@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -6,6 +7,9 @@ from sqlmodel import SQLModel
 
 from backend.routes import auth, quiz
 from backend.database.models import User, Quiz
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 from backend.database.db import engine
@@ -25,14 +29,13 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://ai-quiz-murf.onrender.com",
-        "http://localhost:5173",
-    ],
+    allow_origins=[os.getenv("FRONTEND_URL")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+print(os.getenv("FRONTEND_URL"))
 
 app.include_router(auth.router, prefix="/api")
 app.include_router(quiz.router, prefix="/api")

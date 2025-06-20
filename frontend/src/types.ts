@@ -32,4 +32,5 @@ export interface QuizElements {
 
 export interface QuotaType {
   quota_remaining: number;
+  last_reset: string;
 }

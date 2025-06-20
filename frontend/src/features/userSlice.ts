@@ -1,18 +1,21 @@
-import type { QuizType, UserType } from '../types.ts';
+import type { QuizType, QuotaType, UserType } from '../types.ts';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
   user: UserType | null;
   quizzes: QuizType[] | null;
   curr_quiz: QuizType | null;
-  quota: number;
+  quota: QuotaType;
 }
 
 const initialState: UserState = {
   user: null,
   quizzes: [],
   curr_quiz: null,
-  quota: 0,
+  quota: {
+    quota_remaining: 0,
+    last_reset: '',
+  },
 };
 
 const userSlice = createSlice({
@@ -31,7 +34,8 @@ const userSlice = createSlice({
       state.quizzes?.push(action.payload);
     },
     decrementQuota: (state) => {
-      state.quota = state.quota > 0 ? state.quota - 1 : 0;
+      state.quota.quota_remaining =
+        state.quota.quota_remaining > 0 ? state.quota.quota_remaining - 1 : 0;
     },
   },
 });
