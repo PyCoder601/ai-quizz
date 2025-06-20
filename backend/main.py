@@ -21,7 +21,7 @@ async def keep_alive():
         try:
             print("⏳ Sending keep-alive ping...")
             async with httpx.AsyncClient() as client:
-                await client.get(os.getenv(os.getenv("BACKEND_API") + "/ping"))
+                await client.get(os.getenv("BACKEND_API") + "/ping")
             print("✅ Ping sent.")
         except Exception as e:
             print(f"❌ Ping failed: {e}")
