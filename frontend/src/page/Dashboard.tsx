@@ -211,7 +211,7 @@ function Dashboard() {
                     type='text'
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    placeholder='Ex: Python, Histoire de France, Mathématiques...'
+                    placeholder='Ex: Culture Générale, Mathématiques, ...'
                     className={
                       'w-full rounded-lg border border-gray-600 ' +
                       'bg-[#2a4562] p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none'
