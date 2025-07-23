@@ -4,14 +4,14 @@ services:
     env: python
     plan: free
     buildCommand: cd backend && pip install -r requirements.txt
-    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port 8002
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port 8000
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: fastapi-db
           property: connectionString
       - key: PORT
-        value: 8002
+        value: 8000
 
 databases:
   - name: fastapi-db
