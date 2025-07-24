@@ -95,7 +95,7 @@ async def login(
 
     user_quota = user_quota.scalar_one_or_none()
 
-    user_quota = reset_quota_if_needed(session, user_quota)
+    user_quota = await reset_quota_if_needed(session, user_quota)
 
     res = JSONResponse(
         {

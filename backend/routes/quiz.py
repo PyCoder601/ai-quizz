@@ -33,7 +33,7 @@ async def quiz(
 
     user_quota = await session.execute(select(Quota).where(Quota.user_id == user_id))
     user_quota = user_quota.scalar_one_or_none()
-    user_quota = reset_quota_if_needed(session, user_quota)
+    user_quota = await reset_quota_if_needed(session, user_quota)
     if user_quota.quota_remaining <= 0:
         raise HTTPException(status_code=401, detail="No quota remaining")
 
