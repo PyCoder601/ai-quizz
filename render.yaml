@@ -13,16 +13,6 @@ services:
       - key: PORT
         value: 8000
 
-  - type: web
-    name: ai-quiz
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-
 databases:
   - name: fastapi-db
     plan: free
