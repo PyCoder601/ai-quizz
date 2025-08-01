@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import Header from '../component/Header.tsx';
 
 export default function About() {
   const sections = [
@@ -30,9 +29,7 @@ export default function About() {
   ];
 
   return (
-    <main className='flex min-h-screen flex-col bg-slate-900 text-slate-100 transition-colors duration-300'>
-      <Header />
-
+    <main className='flex flex-col bg-slate-900 text-slate-100 transition-colors duration-300'>
       <section className='mx-auto w-full max-w-7xl px-4 py-3 sm:px-6 sm:py-6 lg:px-8 lg:py-12'>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -43,7 +40,7 @@ export default function About() {
           <h1 className='text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl'>
             À propos de{' '}
             <span className='bg-gradient-to-r from-teal-400 to-cyan-500 bg-clip-text text-transparent'>
-              AI Quiz
+              Quizeo
             </span>
           </h1>
           <p className='mx-auto mt-4 max-w-3xl text-lg text-slate-400 sm:text-xl'>

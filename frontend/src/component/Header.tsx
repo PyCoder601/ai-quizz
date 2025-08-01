@@ -21,14 +21,15 @@ function Header() {
       transition={{ duration: 0.5 }}
       className='sticky top-0 z-50 mx-auto max-w-4xl text-slate-100 shadow-lg backdrop-blur-lg'
     >
-      <header className='mb-8 rounded-xl border border-slate-700 bg-slate-800 p-4 shadow-lg'>
+      <header className='mb-2 rounded-xl border border-slate-700 bg-slate-800 p-4 shadow-lg'>
         <div className='flex flex-col items-center justify-between gap-4 sm:flex-row'>
           <Link to={'/'} className='text-2xl font-bold'>
             QUIZEO
           </Link>
           <div className='flex items-center gap-4'>
+            {user === null && <Link to={'/a-propos'}>À propos</Link>}
             <Link to={'/a-propos'}>À propos</Link>
-            {user === null && (
+            {user !== null && (
               <>
                 <div className='flex items-center gap-2'>
                   <span className='text-sm text-slate-400'>

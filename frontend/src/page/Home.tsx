@@ -1,7 +1,11 @@
 import Auth from '../component/Auth.tsx';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../features/userSlice.ts';
+import { Link } from 'react-router-dom';
 
 function Home() {
+  const user = useSelector(selectUser);
   const featureVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -21,7 +25,7 @@ function Home() {
   return (
     <div className='mx-auto min-h-screen w-full'>
       <div className='container mx-auto px-4 py-6 sm:px-6 lg:px-8'>
-        <div className='grid min-h-[calc(100vh-100px)] items-center gap-12 md:grid-cols-2'>
+        <div className='grid items-center gap-12 md:grid-cols-2'>
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -45,7 +49,16 @@ function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Auth />
+            {user === null ? (
+              <Auth />
+            ) : (
+              <Link
+                to={'/espace-compte'}
+                className='rounded-lg bg-teal-300/10 px-4 py-2 text-4xl font-semibold text-teal-300'
+              >
+                Revenir dans l'espace compte
+              </Link>
+            )}
           </motion.div>
         </div>
 
@@ -98,7 +111,7 @@ function Home() {
                     {
                       {
                         'Génération instantanée':
-                          'Des quiz créés en temps réel par notre IA avancée.',
+                          'Des quiz créés en temps réel par GEMINI.',
                         'Tous niveaux':
                           'Adapté à tous : facile, moyen, difficile.',
                         'Sujets variés':

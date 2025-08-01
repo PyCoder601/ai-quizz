@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { QuizType, QuizElements, QuotaType } from '../types';
 import Quiz from '../component/Quiz';
 import QuizHistory from '../component/QuizHistory';
-import api, { logout } from '../apis/api.ts';
+import api from '../apis/api.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addQuiz,
@@ -172,38 +172,8 @@ function Dashboard() {
     dispatch(setCurrentQuiz(null));
   };
 
-  const getQuotaClass = () => {
-    if (quota.quota_remaining > 2) return 'bg-green-500/10 text-green-400';
-    if (quota.quota_remaining > 0) return 'bg-orange-500/10 text-orange-400';
-    return 'bg-red-500/10 text-red-400';
-  };
-
   return (
-    <div className='mx-auto w-full p-4 text-slate-100 md:p-6'>
-      <header className='mb-8 rounded-xl border border-slate-700 bg-slate-800 p-4 shadow-lg'>
-        <div className='flex flex-col items-center justify-between gap-4 sm:flex-row'>
-          <h1 className='text-2xl font-bold'>Tableau de Bord</h1>
-          <div className='flex items-center gap-4'>
-            <div className='flex items-center gap-2'>
-              <span className='text-sm text-slate-400'>
-                Quiz restants :
-              </span>
-              <span
-                className={`rounded-full px-3 py-1 text-sm font-medium ${getQuotaClass()}`}
-              >
-                {quota.quota_remaining}
-              </span>
-            </div>
-            <button
-              onClick={logout}
-              className='rounded-lg bg-red-500/80 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-600'
-            >
-              Déconnexion
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <div className='mx-auto w-full max-w-4xl p-4 text-slate-100 md:p-6'>
       <main>
         {!quiz ? (
           <motion.div
@@ -224,7 +194,10 @@ function Dashboard() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className='mx-auto max-w-2xl space-y-6'>
+            <form
+              onSubmit={handleSubmit}
+              className='mx-auto max-w-2xl space-y-6'
+            >
               <div className='flex justify-center rounded-lg bg-slate-700 p-1'>
                 <button
                   type='button'
@@ -270,7 +243,7 @@ function Dashboard() {
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder='Ex: Culture Générale, Mathématiques, ...'
-                    className='w-full rounded-lg border border-slate-700 bg-slate-700 p-3 text-slate-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500'
+                    className='w-full rounded-lg border border-slate-700 bg-slate-700 p-3 text-slate-100 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none'
                     required={inputType === 'topic'}
                   />
                 </div>
@@ -312,7 +285,7 @@ function Dashboard() {
                     onChange={(e) =>
                       setNumberOfQuestions(Number(e.target.value))
                     }
-                    className='w-full rounded-lg border border-slate-700 bg-slate-700 p-3 text-slate-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500'
+                    className='w-full rounded-lg border border-slate-700 bg-slate-700 p-3 text-slate-100 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none'
                     required
                   />
                 </div>
@@ -328,7 +301,7 @@ function Dashboard() {
                     id='difficulty'
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
-                    className='w-full rounded-lg border border-slate-700 bg-slate-700 p-3 text-slate-100 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500'
+                    className='w-full rounded-lg border border-slate-700 bg-slate-700 p-3 text-slate-100 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none'
                   >
                     <option value='easy'>Facile</option>
                     <option value='medium'>Moyen</option>
@@ -345,7 +318,7 @@ function Dashboard() {
                 {isLoading ? (
                   <>
                     <svg
-                      className='-ml-1 mr-3 h-5 w-5 animate-spin'
+                      className='mr-3 -ml-1 h-5 w-5 animate-spin'
                       fill='none'
                       viewBox='0 0 24 24'
                     >
@@ -432,7 +405,7 @@ function Dashboard() {
                       {question.options[question.correct_option]}
                     </p>
                   )}
-                  <p className='mt-2 text-sm italic text-slate-400'>
+                  <p className='mt-2 text-sm text-slate-400 italic'>
                     {question.explanation}
                   </p>
                 </div>
