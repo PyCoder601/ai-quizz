@@ -1,126 +1,151 @@
 import Auth from '../component/Auth.tsx';
-import { useEffect } from 'react';
-import axios from 'axios';
-const BASE_URL = import.meta.env.VITE_API_URL;
+import { motion } from 'framer-motion';
 
 function Home() {
-  useEffect(() => {
-    const fetchData = async () => {
-      await axios.get(`${BASE_URL}/stay-online`, {
-        withCredentials: true,
-      });
-    };
+  const featureVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
-    fetchData().catch();
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
-    const interval = setInterval(fetchData, 15 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
   return (
-    <div className='mx-auto min-h-screen max-w-[95%] text-white sm:max-w-4/6'>
-      <div className='container mx-auto px-2 py-12 sm:px-4'>
-        <div className='mx-auto mb-16 max-w-4xl space-y-12'>
-          <section className='space-y-4 text-center'>
-            <h1 className={'text-4xl leading-tight font-bold md:text-5xl'}>
-              AI QUIZ
+    <div className='mx-auto min-h-screen w-full'>
+      <div className='container mx-auto px-4 py-6 sm:px-6 lg:px-8'>
+        <div className='grid min-h-[calc(100vh-100px)] items-center gap-12 md:grid-cols-2'>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className='space-y-6 text-center md:text-left'
+          >
+            <h1 className='text-4xl font-extrabold text-teal-300 md:text-7xl'>
+              QUIZEO
             </h1>
-            <h1 className='text-2xl leading-tight font-bold md:text-3xl'>
+            <h2 className='text-2xl leading-tight font-semibold text-slate-400 md:text-3xl'>
               Apprenez en vous amusant avec des quiz générés par l'IA
-            </h1>
-            <p className='mx-auto max-w-3xl text-lg text-gray-300'>
+            </h2>
+            <p className='mx-auto max-w-2xl text-lg'>
               Développez vos compétences, testez vos connaissances, et laissez
               l'intelligence artificielle créer des défis adaptés à votre
               niveau.
             </p>
-          </section>
-          {/* Formulaire de login/signup */}
-          <Auth />
-          {/* Pourquoi ce site */}
-          <section className='space-y-4 text-center'>
-            <h2 className='text-2xl font-semibold'>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Auth />
+          </motion.div>
+        </div>
+
+        <div className='mx-auto mt-12 max-w-5xl space-y-12'>
+          <motion.section
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, amount: 0.3 }}
+            variants={featureVariants}
+            className='space-y-4 text-center'
+          >
+            <h2 className='text-3xl font-bold'>
               💡 Apprendre n'a jamais été aussi interactif.
             </h2>
-            <p className='text-gray-300'>
+            <p className='mx-auto max-w-3xl text-lg text-slate-400'>
               Grâce à notre système intelligent, chaque quiz est conçu
               spécialement pour vous. Que vous soyez étudiant, curieux, ou
               passionné, notre IA vous propose des questions toujours
               pertinentes et engageantes.
             </p>
-          </section>
+          </motion.section>
 
-          {/* Fonctionnalités clés */}
-          <section className='space-y-6 text-center'>
-            <h2 className='text-2xl font-semibold'>💻 Fonctionnalités clés</h2>
-            <div className='grid gap-4 md:grid-cols-3'>
-              <div className='rounded-lg bg-[#1c2e42] p-5 transition-colors hover:bg-[#2a4562]'>
-                <h3 className='mb-2 font-medium'>Génération instantanée</h3>
-                <p className='text-sm text-gray-300'>
-                  Des quiz créés en temps réel par notre IA avancée
-                </p>
-              </div>
-              <div className='rounded-lg bg-[#1c2e42] p-5 transition-colors hover:bg-[#2a4562]'>
-                <h3 className='mb-2 font-medium'>Tous niveaux</h3>
-                <p className='text-sm text-gray-300'>
-                  Adapté à tous : facile, moyen, difficile
-                </p>
-              </div>
-              <div className='rounded-lg bg-[#1c2e42] p-5 transition-colors hover:bg-[#2a4562]'>
-                <h3 className='mb-2 font-medium'>Sujets variés</h3>
-                <p className='text-sm text-gray-300'>
-                  De nombreux thèmes disponibles pour tous les goûts
-                </p>
-              </div>
-              <div className='rounded-lg bg-[#1c2e42] p-5 transition-colors hover:bg-[#2a4562]'>
-                <h3 className='mb-2 font-medium'>Espace personnel</h3>
-                <p className='text-sm text-gray-300'>
-                  Suivez votre progression avec un historique détaillé
-                </p>
-              </div>
-              <div className='rounded-lg bg-[#1c2e42] p-5 transition-colors hover:bg-[#2a4562]'>
-                <h3 className='mb-2 font-medium'>Évaluation immédiate</h3>
-                <p className='text-sm text-gray-300'>
-                  Recevez des explications détaillées pour chaque réponse
-                </p>
-              </div>
+          <motion.section
+            id='features'
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, amount: 0.2 }}
+            variants={featureVariants}
+            className='space-y-8'
+          >
+            <h2 className='text-center text-3xl font-bold'>
+              💻 Fonctionnalités clés
+            </h2>
+            <div className='grid gap-6 md:grid-cols-3'>
+              {[
+                'Génération instantanée',
+                'Tous niveaux',
+                'Sujets variés',
+                'Espace personnel',
+                'Évaluation immédiate',
+                'Basé sur vos PDF',
+              ].map((feature) => (
+                <motion.div
+                  key={feature}
+                  variants={itemVariants}
+                  className='rounded-xl border border-slate-700 bg-slate-800 p-6 shadow-lg transition-all hover:-translate-y-1 hover:shadow-2xl'
+                >
+                  <h3 className='mb-2 text-xl font-semibold'>{feature}</h3>
+                  <p className='text-slate-400'>
+                    {
+                      {
+                        'Génération instantanée':
+                          'Des quiz créés en temps réel par notre IA avancée.',
+                        'Tous niveaux':
+                          'Adapté à tous : facile, moyen, difficile.',
+                        'Sujets variés':
+                          'De nombreux thèmes disponibles pour tous les goûts.',
+                        'Espace personnel':
+                          'Suivez votre progression avec un historique détaillé.',
+                        'Évaluation immédiate':
+                          'Recevez des explications détaillées pour chaque réponse.',
+                        'Basé sur vos PDF':
+                          'Générez des quiz directement depuis vos documents PDF.',
+                      }[feature]
+                    }
+                  </p>
+                </motion.div>
+              ))}
             </div>
-          </section>
+          </motion.section>
 
-          {/* Exemples de thèmes */}
-          <section className='space-y-6 text-center'>
-            <h2 className='text-2xl font-semibold'>🛠️ Exemples de thèmes</h2>
+          <motion.section
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, amount: 0.2 }}
+            variants={featureVariants}
+            className='space-y-8'
+          >
+            <h2 className='text-center text-3xl font-bold'>
+              🛠️ Exemples de thèmes
+            </h2>
             <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
               {[
                 'Python pour débutants',
                 'Culture Générale',
-                "Quiz sur l'Histoire de l'Afrique",
+                "Histoire de l'Afrique",
                 'Mathématiques',
                 'Anglais niveau collège',
                 'Informatique & Logique',
               ].map((theme) => (
-                <div
+                <motion.div
                   key={theme}
-                  className='cursor-pointer rounded-lg bg-[#1c2e42] p-4 text-center transition-colors hover:bg-[#2a4562]'
+                  variants={itemVariants}
+                  className='cursor-pointer rounded-lg bg-slate-800 p-4 text-center shadow-md transition-colors hover:bg-slate-700'
                 >
                   {theme}
-                </div>
+                </motion.div>
               ))}
             </div>
-          </section>
-
-          {/* À propos */}
-          <section className='space-y-4 rounded-lg bg-[#1c2e42] p-6 text-center'>
-            <h2 className='text-2xl font-semibold'>☺️ À propos du projet</h2>
-            <p className='font-medium'>
-              Un projet éducatif basé sur l'intelligence artificielle.
-            </p>
-            <p className='text-gray-300'>
-              Ce site a été créé pour aider les apprenants à pratiquer
-              activement leurs connaissances via des quiz intelligents, générés
-              dynamiquement à partir d'un moteur IA entraîné sur du contenu
-              pédagogique fiable.
-            </p>
-          </section>
+          </motion.section>
         </div>
       </div>
     </div>

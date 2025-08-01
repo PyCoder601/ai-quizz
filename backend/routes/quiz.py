@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, File, UploadFile, Form
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
@@ -9,7 +9,10 @@ from backend.auth.jwt import SECRET_KEY, ALGORITHM
 from backend.database.models import Quiz, Quota
 from backend.database.schemas import QuizRequest, QuizResponse, QuizUpdate
 from backend.database.db import get_async_session
-from backend.routes.generate_quizzes import generate_challenge_with_ai
+from backend.routes.generate_quizzes import (
+    generate_quiz_from_text_with_ai,
+    extract_text_from_pdf,
+)
 from backend.routes.helper import reset_quota_if_needed
 
 router = APIRouter()
@@ -17,8 +20,8 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@router.post("/generate-quiz", response_model=QuizResponse)
-async def quiz(
+@router.post("/generate-quiz-from-topic", response_model=QuizResponse)
+async def quiz_from_topic(
     data: QuizRequest,
     token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_async_session),
@@ -37,8 +40,8 @@ async def quiz(
     if user_quota.quota_remaining <= 0:
         raise HTTPException(status_code=401, detail="No quota remaining")
 
-    new_quizzes = generate_challenge_with_ai(
-        data.topic, data.difficulty, data.number_of_questions
+    new_quizzes = generate_quiz_from_text_with_ai(
+        f"Sujet: {data.topic}", data.difficulty, data.number_of_questions
     )
 
     if "error" in new_quizzes:
@@ -49,7 +52,7 @@ async def quiz(
     await session.commit()
     await session.refresh(new_quizz)
 
-    new_quizzes = new_quizzes.get("quizzes", [])
+    new_quizzes_list = new_quizzes.get("quizzes", [])
     user_quota.quota_remaining -= 1
     await session.commit()
     await session.refresh(user_quota)
@@ -58,7 +61,60 @@ async def quiz(
         "id": new_quizz.id,
         "title": new_quizz.title,
         "created_at": new_quizz.created_at,
-        "elements": new_quizzes,
+        "elements": new_quizzes_list,
+    }
+
+
+@router.post("/generate-quiz-from-pdf", response_model=QuizResponse)
+async def quiz_from_pdf(
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_async_session),
+    difficulty: str = Form(...),
+    number_of_questions: int = Form(...),
+    file: UploadFile = File(...),
+):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=400, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    user_quota = await session.execute(select(Quota).where(Quota.user_id == user_id))
+    user_quota = user_quota.scalar_one_or_none()
+    user_quota = await reset_quota_if_needed(session, user_quota)
+    if user_quota.quota_remaining <= 0:
+        raise HTTPException(status_code=401, detail="No quota remaining")
+
+    quiz_title = file.filename or "Quiz from PDF"
+    try:
+        text_content = await extract_text_from_pdf(file)
+    except HTTPException as e:
+        raise e
+
+    new_quizzes = generate_quiz_from_text_with_ai(
+        text_content, difficulty, number_of_questions
+    )
+
+    if "error" in new_quizzes:
+        raise HTTPException(status_code=500, detail=new_quizzes["error"])
+
+    new_quizz = Quiz(title=quiz_title, user_id=user_id)
+    session.add(new_quizz)
+    await session.commit()
+    await session.refresh(new_quizz)
+
+    new_quizzes_list = new_quizzes.get("quizzes", [])
+    user_quota.quota_remaining -= 1
+    await session.commit()
+    await session.refresh(user_quota)
+
+    return {
+        "id": new_quizz.id,
+        "title": new_quizz.title,
+        "created_at": new_quizz.created_at,
+        "elements": new_quizzes_list,
     }
 
 

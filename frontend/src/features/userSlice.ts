@@ -48,7 +48,7 @@ export const selectQuizzes = (state: { user: UserState }) => {
 };
 
 export const selectUser = (state: { user: UserState }) => {
-  return state.user.quizzes;
+  return state.user;
 };
 
 export const selectCurrQuiz = (state: { user: UserState }) => {
