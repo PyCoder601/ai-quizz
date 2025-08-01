@@ -22,7 +22,7 @@ function Header() {
       className='sticky top-0 z-50 mx-auto max-w-4xl text-slate-100 shadow-lg backdrop-blur-lg'
     >
       <header className='mb-2 rounded-xl border border-slate-700 bg-slate-800 p-4 shadow-lg'>
-        <div className='flex flex-col items-center justify-between gap-4'>
+        <div className='flex items-center justify-between gap-4'>
           <Link to={'/'} className='text-2xl font-bold'>
             QUIZEO
           </Link>
