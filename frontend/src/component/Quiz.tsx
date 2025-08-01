@@ -84,7 +84,7 @@ function Quiz({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -50 }}
       transition={{ duration: 0.3 }}
-      className={`rounded-xl border border-slate-700 bg-slate-800 p-6 shadow-xl sm:p-8 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
+      className={`rounded-xl border border-slate-700 bg-slate-800 shadow-xl sm:p-8 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
     >
       <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
         <div className='text-sm font-medium text-slate-400'>
@@ -150,10 +150,8 @@ function Quiz({
               </span>
             )}
           </div>
-          <p className='mt-2 text-sm text-slate-400'>
-            {question.explanation}
-          </p>
-          <p className='mt-4 text-xs italic text-slate-400/70'>
+          <p className='mt-2 text-sm text-slate-400'>{question.explanation}</p>
+          <p className='mt-4 text-xs text-slate-400/70 italic'>
             Passage à la question suivante...
           </p>
         </motion.div>
@@ -162,7 +160,9 @@ function Quiz({
       <div className='mt-8 h-2.5 w-full overflow-hidden rounded-full bg-slate-700'>
         <motion.div
           className='h-full bg-teal-500'
-          initial={{ width: `${((questionNumber - 1) / totalQuestions) * 100}%` }}
+          initial={{
+            width: `${((questionNumber - 1) / totalQuestions) * 100}%`,
+          }}
           animate={{ width: `${(questionNumber / totalQuestions) * 100}%` }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
         />
