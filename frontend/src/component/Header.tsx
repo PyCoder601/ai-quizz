@@ -28,7 +28,6 @@ function Header() {
           </Link>
           <div className='flex items-center gap-4'>
             {user === null && <Link to={'/a-propos'}>À propos</Link>}
-            <Link to={'/a-propos'}>À propos</Link>
             {user !== null && (
               <>
                 <div className='flex items-center gap-2'>
