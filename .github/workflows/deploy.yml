@@ -31,5 +31,7 @@ jobs:
             cd /root/romeo
             echo "${{ secrets.ROOT_ENV }}" > .env
             echo "${{ secrets.BACKEND_ENV }}" > backend/.env
+            cd backend
+            alembic upgrade head
             docker-compose down
             docker-compose up --build -d
