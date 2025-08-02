@@ -19,7 +19,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "."
-          target: "/home/ubuntu/app"
+          target: "/root/romeo"
+          scp_ignore: true  # ignore les fichiers ignorés dans .gitignore (y compris .env)
 
       - name: SSH and deploy
         uses: appleboy/ssh-action@master
@@ -28,6 +29,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd /root/romeo/
+            cd /root/romeo
+            echo "${{ secrets.ROOT_ENV }}" > .env
+            echo "${{ secrets.BACKEND_ENV }}" > backend/.env
             docker compose down
             docker compose up --build -d
