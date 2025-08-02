@@ -20,7 +20,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "."
           target: "/root/romeo"
-          scp_ignore: true  # ignore les fichiers ignorés dans .gitignore (y compris .env)
 
       - name: SSH and deploy
         uses: appleboy/ssh-action@master
