@@ -31,5 +31,5 @@ jobs:
             cd /root/romeo
             echo "${{ secrets.ROOT_ENV }}" > .env
             echo "${{ secrets.BACKEND_ENV }}" > backend/.env
-            docker compose down
-            docker compose up --build -d
+            docker-compose down
+            docker-compose up --build -d
