@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { QuizType, QuizElements, QuotaType } from '../types';
 import Quiz from '../component/Quiz';
 import QuizHistory from '../component/QuizHistory';
@@ -9,15 +9,29 @@ import {
   decrementQuota,
   selectCurrQuiz,
   selectQuota,
+  selectUser,
   setCurrentQuiz,
 } from '../features/userSlice.ts';
 import type { AppDispatch } from '../store.ts';
 import { getRemainingTime } from '../helpers.ts';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
   const quiz: QuizType | null = useSelector(selectCurrQuiz);
   const quota: QuotaType = useSelector(selectQuota);
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  if (!user) {
+    return null;
+  }
 
   const [topic, setTopic] = useState('');
   const [file, setFile] = useState<File | null>(null);
