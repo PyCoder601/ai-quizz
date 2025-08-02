@@ -1,0 +1,26 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Environnement virtuel
+.venv/
+venv/
+env/
+
+# Fichiers de développement
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Fichiers locaux
+.env
+alembic.ini
