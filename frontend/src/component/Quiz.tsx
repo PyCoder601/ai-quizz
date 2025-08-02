@@ -84,7 +84,7 @@ function Quiz({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -50 }}
       transition={{ duration: 0.3 }}
-      className={`rounded-xl border border-slate-700 bg-slate-800 shadow-xl sm:p-8 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
+      className={`rounded-xl border border-slate-700 bg-slate-800 p-6 shadow-xl sm:p-8 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
     >
       <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
         <div className='text-sm font-medium text-slate-400'>

@@ -173,7 +173,7 @@ function Dashboard() {
   };
 
   return (
-    <div className='mx-auto w-full max-w-4xl p-4 text-slate-100 md:p-6'>
+    <div className='mx-auto max-w-4xl p-2 text-slate-100 md:p-6'>
       <main>
         {!quiz ? (
           <motion.div
@@ -430,7 +430,7 @@ function Dashboard() {
             </div>
           </motion.div>
         ) : (
-          <div className='relative'>
+          <div>
             <Quiz
               question={quiz.elements[currentQuestionIndex]}
               onAnswer={handleAnswer}

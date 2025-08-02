@@ -3,7 +3,6 @@ import { logout } from '../apis/api.ts';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectQuota, selectUser } from '../features/userSlice.ts';
-// import React from 'react';
 
 function Header() {
   const quota = useSelector(selectQuota);
@@ -23,11 +22,9 @@ function Header() {
     >
       <header className='mb-2 rounded-xl border border-slate-700 bg-slate-800 p-4 shadow-lg'>
         <div className='flex items-center justify-between gap-4'>
-          {user == null && (
-            <Link to={'/'} className='text-2xl font-bold'>
-              QUIZEO
-            </Link>
-          )}
+          <Link to={'/'} className='text-2xl font-bold'>
+            QUIZEO
+          </Link>
           <div className='flex items-center gap-4'>
             {user === null && <Link to={'/a-propos'}>À propos</Link>}
             {user !== null && (
